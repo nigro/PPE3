@@ -289,8 +289,9 @@ section p, section li {
 
 /* Pied de page */
 footer {
-	margin: 0;
-	padding: 15px 20px 10px 0;
+	background-color:336633;
+	margin-top: 5px;
+	padding: 10px 20px 10px 0;
 	font-size: .85em;
 }
 
