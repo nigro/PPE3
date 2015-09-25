@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 10 Janvier 2015 à 17:33
+-- Généré le :  Ven 25 Septembre 2015 à 17:25
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -43,6 +43,23 @@ INSERT INTO `administrateur` (`id`, `identifiant`, `mp`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `enfant`
+--
+
+CREATE TABLE IF NOT EXISTS `enfant` (
+  `id_enfant` int(11) NOT NULL AUTO_INCREMENT,
+  `identifiant` varchar(30) COLLATE utf8_bin NOT NULL,
+  `nom` varchar(30) COLLATE utf8_bin NOT NULL,
+  `prenom` varchar(30) COLLATE utf8_bin NOT NULL,
+  `commentaire` text COLLATE utf8_bin,
+  `age` tinyint(4) NOT NULL,
+  `id_famille` int(11) NOT NULL,
+  PRIMARY KEY (`id_enfant`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `famille`
 --
 
@@ -77,7 +94,23 @@ CREATE TABLE IF NOT EXISTS `famille` (
   UNIQUE KEY `identifiant` (`identifiant`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
+-- --------------------------------------------------------
+
 --
--- Contenu de la table `famille`
+-- Structure de la table `personnel`
 --
 
+CREATE TABLE IF NOT EXISTS `personnel` (
+  `id_personnel` int(11) NOT NULL AUTO_INCREMENT,
+  `identifiant` varchar(30) COLLATE utf8_bin NOT NULL,
+  `nom_personnel` varchar(30) COLLATE utf8_bin NOT NULL,
+  `prenom` varchar(30) COLLATE utf8_bin NOT NULL,
+  `login` varchar(30) COLLATE utf8_bin NOT NULL,
+  `mdp` varchar(30) COLLATE utf8_bin NOT NULL,
+  `commentaire` text COLLATE utf8_bin,
+  PRIMARY KEY (`id_personnel`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
