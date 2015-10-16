@@ -146,7 +146,7 @@ class page_base {
 			<footer>
 				<p>Site de la crèche des petits bouts de Choux -  ANGERS </p>
 				<p id="copyright">
-				créé par GRONDIN Nicolas et BAUMARD Alban (les plus beaux)
+				créé par Baumard Alban et Grondin Nicolas (Les plus beaux)
 				SSII 1FO@SIO - technologies mises en oeuvre PHP objet - jquery - Ajax
 				<a href="http://chevrollier.e-lyco.fr/">Chevrollier</a> 
 				</p>
