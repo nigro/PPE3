@@ -862,9 +862,205 @@ class controleur {
 		return $form;
 	}
 	
-	public function retourne_formulaire_enfant()
+	public function retourne_formulaire_enfant($type,$idfamille="")
 	{
+		$form = '';
+		$identifiant='';
+		$nom = '';
+		$prenom = '';
+		$age = '';
+		$commentaire = '';
+
+		if ($type == 'Ajout') {
+			$titreform = 'Formulaire ajout enfant';
+			$libelbutton = 'Ajouter';
+		}
+		if ($type == 'Supp') {
+			$titreform = 'Formulaire Suppression inscription enfant';
+			$libelbutton = 'Supprimer';
+		}
+		if ($type == 'Modif') {
+			$titreform = 'Formulaire Modification enfant';
+			$libelbutton = 'Modifier';
+		}
+		if ($type == 'Supp' || $type == 'Modif') {
+			$row = $this->vpdo->trouve_famille ( $idfamille );
+			if ($row != null) {
+				$identifiant=$row->identifiant;
+				$nom = $row->nom;
+				$prenom = $row->prenom;
+				$age = $row->age;
+				$commentaire = $row->commentaire;		
+				}
+			}
 		
+			
+		$form = '
+			<article >
+				<h3>' . $titreform . '</h3>
+				<form id="formfamille" method="post" >';
+		if ($type == 'Ajout') {
+			$vmp=$this->genererMDP();
+			$form = $form . '
+					<div >
+					Identifiant : <input type="text" name="identifiant" id="identifiant" placeholder="Identifiant enfant" value="' . $identifiant . '" required/></br>
+					</div>
+					
+			';		
+		}
+		else {
+			$form = $form . '
+			<div style="visibility: hidden;">
+					Identifiant : <input type="text" name="identifiant" id="identifiant" placeholder="Identifiant enfant" value="' . $identifiant . '" required/></br>
+					</div>
+							';
+		}
+		$form = $form . ' 
+					</br>Informations sur l\'enfant</br></br>
+					<input type="text" name="nom" id="nom" placeholder="Nom enfant" value="' . $nom . '" required/>
+					<input type="text" name="prenom" id="prenom" placeholder="Prenom enfant" value="' . $prenom . '" required/></br>
+					<input type="text" name="age" id="age" placeholder="age" value="' . $age . '" required/>
+					<input type="text" name="commentaire" id="commentaire" placeholder="Commentaire" value="' . $commentaire . '" required/></br>
+
+					<input id="submit" type="submit" name="send" class="button" value="' . $libelbutton . '" />
+				</form>
+				<script>function hd(){ $(\'#modal\').hide();}</script>
+				<div  id="modal" >
+										<h1>Informations !</h1>
+										<div id="dialog1" ></div>
+										<a class="no" onclick="hd();">OK</a>
+				</div>
+			<article >
+	<script>
+	$("#modal").hide();
+	//Initialize the tooltips
+	$("#formfamille :input").tooltipster({
+				         trigger: "custom",
+				         onlyOne: false,
+				         position: "bottom",
+				         multiple:true,
+				         autoClose:false});
+		jQuery.validator.addMethod(
+			  "regex",
+			   function(value, element, regexp) {
+			       if (regexp.constructor != RegExp)
+			          regexp = new RegExp(regexp);
+			       else if (regexp.global)
+			          regexp.lastIndex = 0;
+			          return this.optional(element) || regexp.test(value);
+			   },"erreur champs non valide"
+			);
+	$("#formfamille").submit(function( e ){
+        e.preventDefault();
+		$("#modal").hide();
+	
+		var $url="ajax/valide_ajout_enfant.php";
+		if($("#submit").prop("value")=="Modifier"){$url="ajax/valide_modif_enfant.php";}
+		if($("#submit").prop("value")=="Supprimer"){$url="ajax/valide_supp_enfant.php";}
+		if($("#formfamille").valid())
+		{
+			$fonction1="pere";
+			if($("input[type=radio][name=rbfonction1]:checked").attr("value")=="rbp"){$fonction1="pere";}
+			if($("input[type=radio][name=rbfonction1]:checked").attr("value")=="rbm"){$fonction1="mere";}
+			if($("input[type=radio][name=rbfonction1]:checked").attr("value")=="rba"){$fonction1=$("#fonction1").val();}
+			$fonction2="";
+			if($("input[type=radio][name=rbfonction2]:checked").attr("value")=="rbp"){$fonction2="pere";}
+			if($("input[type=radio][name=rbfonction2]:checked").attr("value")=="rbm"){$fonction2="mere";}
+			if($("input[type=radio][name=rbfonction2]:checked").attr("value")=="rba"){$fonction2=$("#fonction2").val();}
+			var formData = {
+			"identifiant"			: $("#identifiant").val(),
+			"nom" 					: $("#nom").val().toUpperCase(),
+   			"prenom"				: $("#prenom").val(),
+			"age"				: $("#age").val(),
+			"commentaire"				: $("#commentaire").val()
+			};
+				
+			var filterDataRequest = $.ajax(
+    		{
+	
+        		type: "POST",
+        		url: $url,
+        		dataType: "json",
+				encode          : true,
+        		data: formData,
+	
+			});
+			filterDataRequest.done(function(data)
+			{
+				if ( ! data.success)
+				{
+						var $msg="erreur-></br><ul style=\"list-style-type :decimal;padding:0 5%;\">";
+						if (data.errors.message) {
+							$x=data.errors.message;
+							$msg+="<li>";
+							$msg+=$x;
+							$msg+="</li>";
+							}
+						if (data.errors.requete) {
+							$x=data.errors.requete;
+							$msg+="<li>";
+							$msg+=$x;
+							$msg+="</li>";
+							}
+	
+						$msg+="</ul>";
+				}
+				else
+				{
+						$msg="";
+						if(data.message){$msg+="</br>";$x=data.message;$msg+=$x;}
+				}
+	
+					$("#dialog1").html($msg);$("#modal").show();
+	
+				});
+			filterDataRequest.fail(function(jqXHR, textStatus)
+			{
+	
+     			if (jqXHR.status === 0){alert("Not connect.n Verify Network.");}
+    			else if (jqXHR.status == 404){alert("Requested page not found. [404]");}
+				else if (jqXHR.status == 500){alert("Internal Server Error [500].");}
+				else if (textStatus === "parsererror"){alert("Requested JSON parse failed.");}
+				else if (textStatus === "timeout"){alert("Time out error.");}
+				else if (textStatus === "abort"){alert("Ajax request aborted.");}
+				else{alert("Uncaught Error.n" + jqXHR.responseText);}
+			});
+		}
+	});
+  
+	$("#formfamille").validate({
+		rules:
+		{
+							
+			"nom": {required: true},
+			"prenom": {required: true},
+			
+		},
+		messages:
+		{
+        	"nom":
+          	{
+            	required: "Vous devez saisir un nom valide"
+          	},
+			"prenom":
+          	{
+            	required: "Vous devez saisir un prenom valide"
+          	},
+			
+		},
+		errorPlacement: function (error, element) {
+			$(element).tooltipster("update", $(error).text());
+			$(element).tooltipster("show");
+		},
+		success: function (label, element)
+		{
+			$(element).tooltipster("hide");
+		}
+   	});
+	</script>
+	
+		';
+		return $form;
 	}
 
 	public function affiche_liste_famille($type) {
