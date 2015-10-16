@@ -314,7 +314,7 @@ class controleur {
 				<div  id="modal" >
 										<h1>Informations !</h1>
 										<div id="dialog1" ></div>
-										<a class="no" onclick="hd();">OK</a>
+										<a class="no" onclick="hd();" href="index.php">OK</a>
 				</div>
 			<article >
 	<script>
