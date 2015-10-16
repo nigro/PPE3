@@ -860,6 +860,11 @@ class controleur {
 		';
 		return $form;
 	}
+	
+	public function retourne_formulaire_enfant()
+	{
+		
+	}
 
 	public function affiche_liste_famille($type) {
 		if ($type == 'Supp') {
